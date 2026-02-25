@@ -1,58 +1,52 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { Route, Routes } from "react-router-dom";
 import Navigation from "./nav/Navigation";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import { Route, Routes } from "react-router-dom";
-import { path } from "./routes/path";
 import ShowPost from "./pages/ShowPost";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import GuestRoute from "./routes/GuestRoute";
+import { path } from "./routes/path";
+
 function App() {
   return (
     <Routes>
-      {/* ✅ Guest pages WITH navigation */}
-      <Route
-        path={path.login}
-        element={
-          <>
-            <Navigation />
+      {/* ✅ Guest pages inside Navigation layout */}
+      <Route element={<Navigation />}>
+        <Route
+          path={path.login}
+          element={
             <GuestRoute>
               <Login />
             </GuestRoute>
-          </>
-        }
-      />
-
-      <Route
-        path={path.register}
-        element={
-          <>
-            <Navigation />
+          }
+        />
+        <Route
+          path={path.register}
+          element={
             <GuestRoute>
               <Register />
             </GuestRoute>
-          </>
-        }
-      />
-      <Route
-        path={path.show}
-        element={
-          <ProtectedRoute>
-            <ShowPost />
-          </ProtectedRoute>
-        }
-      />
+          }
+        />
+      </Route>
 
-      {/* ✅ Dashboard WITHOUT navigation */}
+      {/* ✅ Protected pages without Navigation */}
       <Route
         path={path.dashboard}
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={path.show}
+        element={
+          <ProtectedRoute>
+            <ShowPost />
           </ProtectedRoute>
         }
       />

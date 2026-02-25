@@ -45,8 +45,51 @@ export function usePost() {
       ),
     );
   }
+  async function addComment(postId, payload) {
+    setErr("");
+    try {
+      const res = await postsApi.addComment(postId, payload);
+
+      // backend may return comment directly or {data: comment}
+      const newComm = res.data.data ?? res.data;
+
+      // Update the post in state:
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (p.id !== postId) return p;
+
+          // If your post already has comments array:
+          const oldComments = p.comments ?? [];
+          return {
+            ...p,
+            comments: [newComm, ...oldComments],
+            // optional: if you track count
+            comments_count: (p.comments_count ?? oldComments.length) + 1,
+          };
+        }),
+      );
+
+      return newComm;
+    } catch (error) {
+      setErr(
+        error?.response?.data?.message ||
+          error?.message ||
+          "failed to add comment",
+      );
+      throw error;
+    }
+  }
   useEffect(() => {
     fetchPosts();
   }, []);
-  return { createPost, deletePost, loading, toggleLike, posts, err, setErr };
+  return {
+    createPost,
+    deletePost,
+    loading,
+    toggleLike,
+    addComment,
+    posts,
+    err,
+    setErr,
+  };
 }

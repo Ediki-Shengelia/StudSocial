@@ -17,7 +17,7 @@ class PostController extends Controller
     {
         $userId = auth()->id();
         $posts = Post::query()
-            ->withCount('likes')
+            ->withCount(['likes', 'comments'])
             ->when($userId, fn($q) =>
             $q->withExists([
                 'likes as liked_by_me' => fn($qq) => $qq->where('user_id', $userId)
@@ -50,13 +50,24 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $userId = auth()->id();
-        $post->loadCount('likes');
-        // $post->load('user');
+
+        $post->load([
+            'comments.user'   // loads comments and comment authors
+        ]);
+
+        $post->loadCount([
+            'likes',
+            'comments'        // adds comments_count
+        ]);
+
         if ($userId) {
-            $post->liked_by_me = $post->likes()->where('user_id', $userId)->exists();
+            $post->liked_by_me = $post->likes()
+                ->where('user_id', $userId)
+                ->exists();
         } else {
             $post->liked_by_me = false;
         }
+
         return new PostResource($post);
     }
 
