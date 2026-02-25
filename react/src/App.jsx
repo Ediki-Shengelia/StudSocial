@@ -8,12 +8,12 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import { path } from "./routes/path";
+import ShowPost from "./pages/ShowPost";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import GuestRoute from './routes/GuestRoute'
+import GuestRoute from "./routes/GuestRoute";
 function App() {
   return (
     <Routes>
-
       {/* ✅ Guest pages WITH navigation */}
       <Route
         path={path.login}
@@ -38,6 +38,14 @@ function App() {
           </>
         }
       />
+      <Route
+        path={path.show}
+        element={
+          <ProtectedRoute>
+            <ShowPost />
+          </ProtectedRoute>
+        }
+      />
 
       {/* ✅ Dashboard WITHOUT navigation */}
       <Route
@@ -48,7 +56,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-
     </Routes>
   );
 }

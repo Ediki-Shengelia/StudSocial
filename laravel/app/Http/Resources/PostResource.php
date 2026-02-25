@@ -22,8 +22,13 @@ class PostResource extends JsonResource
                 ? asset('storage/' . $this->post_photo)
                 : null,
             'user_id' => $this->user_id,   // ✅ make sure this exists
+            
+            'likes_count' => $this->likes_count ?? 0,
 
-            'user' => new UserResource($this->whenLoaded('user'))
+            // when not loaded, default false
+            'liked_by_me' => (bool) ($this->liked_by_me ?? false),
+            // 'user' => new UserResource($this->whenLoaded('user'))
+
         ];
     }
 }

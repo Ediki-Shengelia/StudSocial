@@ -31,8 +31,22 @@ export function usePost() {
     await postsApi.remove(id);
     setPosts((prev) => prev.filter((p) => p.id !== id));
   }
+
+  async function toggleLike(post) {
+    const res = post.liked_by_me
+      ? await postsApi.unlike(post.id)
+      : await postsApi.like(post.id);
+
+    const { likes_count, liked_by_me } = res.data;
+
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === post.id ? { ...p, likes_count, liked_by_me } : p,
+      ),
+    );
+  }
   useEffect(() => {
     fetchPosts();
   }, []);
-  return { createPost, deletePost, loading, posts, err, setErr };
+  return { createPost, deletePost, loading, toggleLike, posts, err, setErr };
 }

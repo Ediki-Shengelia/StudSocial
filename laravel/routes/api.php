@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+
+use App\Http\Controllers\Api\LikeController as ApiLikeController;
 use App\Http\Controllers\Api\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,4 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user',  [AuthController::class, 'user']);
     Route::apiResource('/posts', PostController::class);
+    Route::post('posts/{post}/like', [ApiLikeController::class, 'like']);
+    Route::delete('posts/{post}/like', [ApiLikeController::class, 'unlike']);
 });

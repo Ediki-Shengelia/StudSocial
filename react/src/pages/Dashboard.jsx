@@ -5,7 +5,7 @@ import PostList from "../posts/PostList";
 import { usePost } from "../posts/usePost";
 const Dashboard = () => {
   const { logout } = useContext(AuthContext);
-  const { createPost, deletePost, loading, posts, err, setErr, updatePost } =
+  const { createPost, deletePost, loading,toggleLike, posts, err, setErr, updatePost } =
     usePost();
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
@@ -58,7 +58,7 @@ const Dashboard = () => {
       <button onClick={logout} className="bg-black text-white fixed top-2 right-1 px-2 py-1 rounded-2xl hover:scale-105 cursor-pointer">Logout</button>
       <PostForm onCreate={HandleCreate} creating={creating} />
       {err ? <p>{err}</p> : null}
-      <PostList posts={posts} onDelete={handleDelete} onUpdate={HandleUpdate}   updatingId={updatingId} deletingId={deletingId} />
+      <PostList posts={posts} onDelete={handleDelete} onUpdate={HandleUpdate} onLike={toggleLike}   updatingId={updatingId} deletingId={deletingId} />
     </div>
   );
 };

@@ -15,7 +15,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user')->latest()->paginate();
+        $userId = auth()->id();
+        $posts = Post::query()
+            ->withCount('likes')
+            ->when($userId, fn($q) =>
+            $q->withExists([
+                'likes as liked_by_me' => fn($qq) => $qq->where('user_id', $userId)
+            ]))->latest()->get();
         return PostResource::collection($posts);
     }
 
@@ -43,7 +49,14 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load('user');
+        $userId = auth()->id();
+        $post->loadCount('likes');
+        // $post->load('user');
+        if ($userId) {
+            $post->liked_by_me = $post->likes()->where('user_id', $userId)->exists();
+        } else {
+            $post->liked_by_me = false;
+        }
         return new PostResource($post);
     }
 
