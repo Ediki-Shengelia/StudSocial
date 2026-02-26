@@ -29,7 +29,7 @@ class PostResource extends JsonResource
             'liked_by_me' => (bool) ($this->liked_by_me ?? false),
             // 'user' => new UserResource($this->whenLoaded('user'))
             'comments' => $this->whenLoaded('comments'),
-
+            'user' => new UserResource($this->whenLoaded('user'))
         ];
     }
 }

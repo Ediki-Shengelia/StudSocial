@@ -8,11 +8,12 @@ import ShowPost from "./pages/ShowPost";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import GuestRoute from "./routes/GuestRoute";
 import { path } from "./routes/path";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
     <Routes>
-
       {/* Guest pages */}
       <Route element={<Navigation />}>
         <Route
@@ -51,7 +52,8 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route path={path.EditProfile} element={<EditProfile />} />
+      <Route path={path.profile} element={<Profile />} />
     </Routes>
   );
 }

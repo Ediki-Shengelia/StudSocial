@@ -11,4 +11,9 @@ export const postsApi = {
     api.post(`/api/posts/${postId}/comments`, payload),
   removeComment: (postId, commentId) =>
     api.delete(`/api/posts/${postId}/comments/${commentId}`),
+  me: () => api.get("/api/profile/me"),
+  update: (formData) =>
+    api.post("/api/profile/me", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };

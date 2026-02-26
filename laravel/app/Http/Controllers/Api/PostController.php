@@ -17,6 +17,8 @@ class PostController extends Controller
     {
         $userId = auth()->id();
         $posts = Post::query()
+            ->with(['user', 'comments.user']) // 🔥 ADD THIS
+
             ->withCount(['likes', 'comments'])
             ->when($userId, fn($q) =>
             $q->withExists([
