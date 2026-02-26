@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\LikeController as ApiLikeController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,4 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('posts/{post}/like', [ApiLikeController::class, 'unlike']);
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 });

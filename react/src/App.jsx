@@ -12,7 +12,8 @@ import { path } from "./routes/path";
 function App() {
   return (
     <Routes>
-      {/* ✅ Guest pages inside Navigation layout */}
+
+      {/* Guest pages */}
       <Route element={<Navigation />}>
         <Route
           path={path.login}
@@ -32,7 +33,7 @@ function App() {
         />
       </Route>
 
-      {/* ✅ Protected pages without Navigation */}
+      {/* Protected pages */}
       <Route
         path={path.dashboard}
         element={
@@ -50,6 +51,7 @@ function App() {
           </ProtectedRoute>
         }
       />
+
     </Routes>
   );
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Notifications\LikeNotification;
 
 class LikeController extends Controller
 {
@@ -12,6 +13,11 @@ class LikeController extends Controller
         $post->likes()->firstOrCreate([
             'user_id' => auth()->id(),
         ]);
+
+        // notify post owner (not yourself)
+        if ($post->user_id !== auth()->id()) {
+            $post->user->notify(new LikeNotification($post, auth()->user()));
+        }
 
         return response()->json([
             'likes_count' => $post->likes()->count(),

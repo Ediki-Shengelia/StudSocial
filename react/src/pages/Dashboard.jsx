@@ -3,7 +3,7 @@ import { AuthContext } from "../auth/AuthContext";
 import PostForm from "../posts/PostForm";
 import PostList from "../posts/PostList";
 import { usePost } from "../posts/usePost";
-
+import NotificationsMenu from "./NotificationsMenu";
 const Dashboard = () => {
   const { logout } = useContext(AuthContext);
   const {
@@ -30,7 +30,7 @@ const Dashboard = () => {
       setErr(
         error?.response?.data?.message ||
           error?.message ||
-          "failed to create posts"
+          "failed to create posts",
       );
     } finally {
       setCreating(false);
@@ -58,7 +58,7 @@ const Dashboard = () => {
       setErr(
         error?.response?.data?.message ||
           error?.message ||
-          "failed to delete posts"
+          "failed to delete posts",
       );
     } finally {
       setDeletingId(null);
@@ -80,12 +80,16 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <button
-            onClick={logout}
-            className="rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-3">
+            <NotificationsMenu />
+
+            <button
+              onClick={logout}
+              className="rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
