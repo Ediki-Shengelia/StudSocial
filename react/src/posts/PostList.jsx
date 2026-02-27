@@ -13,12 +13,11 @@ const PostList = ({
   const navigate = useNavigate();
 
   const [comments, setComments] = useState({});
-  const [sendingFor, setSendingFor] = useState({}); // { [postId]: true }
-  const [errFor, setErrFor] = useState({}); // { [postId]: "error" }
+  const [sendingFor, setSendingFor] = useState({});
+  const [errFor, setErrFor] = useState({});
 
   async function handleAddComment(e, postId) {
     e.stopPropagation();
-
     if (!onAddComment) return;
 
     const text = (comments[postId] || "").trim();
@@ -62,7 +61,7 @@ const PostList = ({
             className="group relative rounded-2xl border border-white/10 bg-zinc-900/60 backdrop-blur p-5 transition
                        hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/10"
           >
-            {/* Header row */}
+            {/* Header */}
             <div className="relative">
               <button
                 onClick={(e) => openUserProfile(e, post)}
@@ -77,15 +76,13 @@ const PostList = ({
                 {post.title}
               </p>
 
-              {/* Delete only if handler exists */}
               {onDelete && isOwner && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(post.id);
                   }}
-                  className="absolute right-0 top-0 rounded-xl bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-200
-                             ring-1 ring-red-500/30 hover:bg-red-500/25 transition"
+                  className="absolute right-0 top-0 rounded-xl bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-200"
                 >
                   {deletingId === post.id ? "Deleting..." : "Delete"}
                 </button>
@@ -98,30 +95,29 @@ const PostList = ({
                 <img
                   src={post.post_photo}
                   alt=""
-                  className="mx-auto max-h-72 w-full max-w-md rounded-xl object-cover shadow-lg shadow-black/40 ring-1 ring-white/10"
+                  className="mx-auto max-h-72 w-full max-w-md rounded-xl object-cover"
                 />
               </div>
             )}
 
-            {/* Like + comments count */}
+            {/* Like + Comment Count */}
             <div className="mt-4 flex items-center justify-center gap-8">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!onLike) return;
-                  onLike(post);
+                  onLike(post); // ✅ always full post
                 }}
                 disabled={!onLike}
                 className={`flex items-center gap-2 text-lg font-medium transition ${
-                  !onLike
-                    ? "text-zinc-500 cursor-not-allowed"
-                    : post.liked_by_me
+                  post.liked_by_me
                     ? "text-red-500"
                     : "text-zinc-400 hover:text-red-400"
                 }`}
-                title={!onLike ? "Like is disabled on this page" : "Like"}
               >
-                <span className="text-2xl">{post.liked_by_me ? "❤️" : "🤍"}</span>
+                <span className="text-2xl">
+                  {post.liked_by_me ? "❤️" : "🤍"}
+                </span>
                 <span>{post.likes_count ?? 0}</span>
               </button>
 
@@ -133,16 +129,14 @@ const PostList = ({
               </div>
             </div>
 
-            {/* Comment input */}
+            {/* Comment Input */}
             <div onClick={(e) => e.stopPropagation()} className="mt-4">
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder={
-                    onAddComment ? "Write a comment..." : "Comments disabled"
-                  }
+                  placeholder="Write a comment..."
                   value={comments[post.id] || ""}
-                  disabled={!onAddComment || !!sendingFor[post.id]}
+                  disabled={!!sendingFor[post.id]}
                   onChange={(e) =>
                     setComments((prev) => ({
                       ...prev,
@@ -152,25 +146,22 @@ const PostList = ({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAddComment(e, post.id);
                   }}
-                  className="flex-1 rounded-xl bg-zinc-950/60 px-3 py-2 text-sm text-white
-                             ring-1 ring-white/10 placeholder:text-zinc-500
-                             focus:outline-none focus:ring-2 focus:ring-emerald-500/70
-                             disabled:opacity-60"
+                  className="flex-1 rounded-xl bg-zinc-950/60 px-3 py-2 text-sm text-white"
                 />
 
                 <button
                   onClick={(e) => handleAddComment(e, post.id)}
-                  disabled={!onAddComment || !!sendingFor[post.id]}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white
-                             hover:bg-emerald-500 active:scale-[0.99] transition
-                             disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={!!sendingFor[post.id]}
+                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white"
                 >
                   {sendingFor[post.id] ? "Adding..." : "Add"}
                 </button>
               </div>
 
               {errFor[post.id] && (
-                <p className="mt-2 text-xs text-red-300">{errFor[post.id]}</p>
+                <p className="mt-2 text-xs text-red-300">
+                  {errFor[post.id]}
+                </p>
               )}
             </div>
 

@@ -85,7 +85,7 @@ const Dashboard = () => {
 
             <button
               onClick={logout}
-              className="rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
+              className="cursor-pointer rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
             >
               Logout
             </button>
@@ -146,14 +146,12 @@ const Dashboard = () => {
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-2 sm:p-3 shadow-lg shadow-black/30">
             <PostList
-              posts={posts}
-              onDelete={handleDelete}
-              onUpdate={HandleUpdate}
-              onLike={toggleLike}
-              onAddComment={addComment}
-              updatingId={updatingId}
-              deletingId={deletingId}
-            />
+  posts={posts}
+  onDelete={handleDelete}
+  onLike={toggleLike}   // ✅ toggleLike(post)
+  onAddComment={addComment}
+  deletingId={deletingId}
+/>
           </div>
         </section>
       </main>

@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::get('/profile/me', [ProfileController::class, 'me']);
     Route::post('/profile/me', [ProfileController::class, 'update']); // use POST for file upload
+    Route::get('/users/{user}', [ProfileController::class, 'show']);
 
+    Route::get('/users/{user}/posts', [ProfileController::class, 'posts']);
 });
-Route::get('/users/{user}', [ProfileController::class, 'show']);
-Route::get('/users/{user}/posts', [ProfileController::class, 'posts']);

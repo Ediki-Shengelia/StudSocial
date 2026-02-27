@@ -5,31 +5,36 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\PostResource;
 use App\Models\User;
+use App\Models\Post; // ✅ ADD THIS
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends Controller
 {
+
     public function show(User $user)
     {
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'user_photo' => $user->user_photo ? asset('storage/' . $user->user_photo) : null,
-            'posts_count' => $user->posts()->count(),
-        ]);
+        return new ProfileResource($user);
     }
-
     public function posts(User $user)
     {
+        $authId = auth()->id();
+
         $posts = $user->posts()
-            ->latest()
-            ->with('user')
+            ->with(['user', 'comments.user'])
             ->withCount(['likes', 'comments'])
+            ->when($authId, function ($query) use ($authId) {
+                $query->withExists([
+                    'likes as liked_by_me' => fn($q) =>
+                    $q->where('user_id', $authId)
+                ]);
+            })
+            ->latest()
             ->get();
 
-        return response()->json(['data' => $posts]);
+        return \App\Http\Resources\PostResource::collection($posts);
     }
     public function me(Request $request)
     {

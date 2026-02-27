@@ -70,7 +70,7 @@ const NotificationsMenu = () => {
         className="relative inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 text-zinc-100 hover:bg-white/10 transition"
         aria-label="Notifications"
       >
-        <span className="text-lg">🔔</span>
+        <span className="text-lg cursor-pointer">🔔</span>
 
         {unreadCount > 0 && (
           <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-600 text-[11px] leading-[18px] text-white text-center">

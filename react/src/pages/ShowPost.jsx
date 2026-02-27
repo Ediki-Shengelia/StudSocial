@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { postsApi } from "../posts/temp";
+import { AuthContext } from "../auth/AuthContext";
 import { CircleLoader } from "react-spinners";
 
 export default function ShowPost() {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+
   const [post, setPost] = useState(null);
   const [err, setErr] = useState("");
+  const [loadingLike, setLoadingLike] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [sendingComment, setSendingComment] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,6 +33,67 @@ export default function ShowPost() {
     return () => (cancelled = true);
   }, [id]);
 
+  // ============================
+  // ❤️ LIKE / UNLIKE
+  // ============================
+
+  async function handleLike() {
+    if (!post) return;
+
+    setLoadingLike(true);
+
+    try {
+      const res = post.liked_by_me
+        ? await postsApi.unlike(post.id)
+        : await postsApi.like(post.id);
+
+      setPost((prev) => ({
+        ...prev,
+        likes_count: res.data.likes_count,
+        liked_by_me: res.data.liked_by_me,
+      }));
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoadingLike(false);
+    }
+  }
+
+  // ============================
+  // 💬 ADD COMMENT
+  // ============================
+
+  async function handleAddComment(e) {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    setSendingComment(true);
+
+    try {
+      const res = await postsApi.addComment(post.id, {
+        comment: commentText,
+      });
+
+      const newComment = res.data?.data ?? res.data;
+
+      setPost((prev) => ({
+        ...prev,
+        comments: [newComment, ...(prev.comments || [])],
+        comments_count: (prev.comments_count || 0) + 1,
+      }));
+
+      setCommentText("");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setSendingComment(false);
+    }
+  }
+
+  // ============================
+  // STATES
+  // ============================
+
   if (err)
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-red-400">
@@ -40,6 +107,10 @@ export default function ShowPost() {
         <CircleLoader color="#10b981" />
       </div>
     );
+
+  // ============================
+  // UI
+  // ============================
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white px-4 py-10">
@@ -77,17 +148,43 @@ export default function ShowPost() {
             </div>
           )}
 
-          {/* Stats */}
+          {/* ❤️ Likes + Comments Count */}
           <div className="flex justify-center gap-8 mt-6 text-lg">
-            <div className="flex items-center gap-2 text-red-500">
-              ❤️ {post.likes_count ?? 0}
-            </div>
+
+          <button
+  onClick={handleLike}
+  disabled={loadingLike}
+  className="flex items-center gap-2 text-lg transition"
+>
+  {post.liked_by_me ? "❤️" : "🤍"}
+  {post.likes_count ?? 0}
+</button>
+
             <div className="flex items-center gap-2 text-zinc-300">
               💬 {post.comments_count ?? 0}
             </div>
           </div>
 
-          {/* Comments */}
+          {/* 💬 Add Comment */}
+          {user && (
+            <form onSubmit={handleAddComment} className="mt-8">
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Write a comment..."
+                className="w-full bg-zinc-800 rounded-xl p-3 border border-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              <button
+                type="submit"
+                disabled={sendingComment}
+                className="mt-3 px-4 py-2 bg-emerald-500 rounded-xl hover:bg-emerald-600 transition"
+              >
+                {sendingComment ? "Sending..." : "Add Comment"}
+              </button>
+            </form>
+          )}
+
+          {/* Comments List */}
           <h2 className="text-lg font-semibold mt-8 border-b border-white/10 pb-2">
             Comments
           </h2>
@@ -111,6 +208,7 @@ export default function ShowPost() {
           ) : (
             <p className="mt-4 text-zinc-500">No comments yet.</p>
           )}
+
         </div>
       </div>
     </div>
