@@ -107,6 +107,9 @@ const Login = () => {
               Register
             </Link>
           </p>
+         <Link to={path.restoreuser}>
+            Restore your Account
+         </Link>
         </form>
       </div>
     </div>

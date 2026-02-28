@@ -8,8 +8,11 @@ use App\Http\Resources\ProfileResource;
 use App\Http\Resources\PostResource;
 use App\Models\User;
 use App\Models\Post; // ✅ ADD THIS
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password; // Correct for validation
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Request;
+
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -73,5 +76,49 @@ class ProfileController extends Controller
     private function formatUser(User $user)
     {
         return new ProfileResource($user);
+    }
+
+    public function checkEmail(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+
+        if (!$user) {
+            return response()->json([
+                'exists' => false,
+                'message' => 'Email not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'exists' => true
+        ]);
+    }
+    public function restoreUser(Request $request)
+    {
+        $data = $request->validate([
+            'email' => "required|email",
+            'password' => ['required', Password::min(6)->mixedCase()]
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+        if (!$user) {
+            return response()->json([
+                'message' => "Email does not exist"
+            ], 404);
+        }
+
+        $user->update([
+            'password' => Hash::make($data['password'])
+        ]);
+        $token = $user->createToken('restored-passsword')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Password restored successfully',
+            'token' => $token,
+        ]);
     }
 }

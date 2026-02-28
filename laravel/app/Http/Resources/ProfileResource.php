@@ -20,7 +20,7 @@ class ProfileResource extends JsonResource
             'bio' => $this->bio,
             'location' => $this->location,
             'website' => $this->website,
-            'this_photo' => $this->user_photo ? asset('storage/' . $this->user_photo) : null,
+            'user_photo' => $this->user_photo ? asset('storage/' . $this->user_photo) : null,
         ];
     }
 }

@@ -16,4 +16,6 @@ export const postsApi = {
     api.post("/api/profile/me", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  restorePassword: (payload) => api.post("/api/restore/user", payload),
+  checkEmail: (email) => api.get(`/api/check-email`, { params: { email } }),
 };

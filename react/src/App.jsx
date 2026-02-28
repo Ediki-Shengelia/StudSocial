@@ -10,7 +10,7 @@ import GuestRoute from "./routes/GuestRoute";
 import { path } from "./routes/path";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
-
+import RestoreUser from './pages/RestoreUser'
 function App() {
   return (
     <Routes>
@@ -52,8 +52,27 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path={path.EditProfile} element={<EditProfile />} />
-      <Route path={path.profile} element={<Profile />} />
+      <Route
+        path={path.EditProfile}
+        element={
+          <ProtectedRoute>
+            <EditProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={path.profile}
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route path={path.restoreuser} element={
+        <GuestRoute>
+         <RestoreUser/>
+        </GuestRoute>
+      }/>
     </Routes>
   );
 }

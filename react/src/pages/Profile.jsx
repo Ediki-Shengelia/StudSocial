@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { postsApi } from "../posts/temp";
 import { AuthContext } from "../auth/AuthContext";
 import PostList from "../posts/PostList";
-
+import {path} from '../routes/path'
 export default function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -144,6 +144,11 @@ export default function Profile() {
   return (
     <div className="min-h-screen w-full bg-zinc-950 px-4 py-10">
       <div className="mx-auto w-full max-w-3xl">
+        <button className="bg-white px-4 py-2 rounded-2xl fixed top-2 right-2 cursor-pointer hover:scale-110 hover:bg-red-600" onClick={()=>{
+          navigate(path.dashboard)
+        }}>
+          Dashboard
+        </button>
         {/* PROFILE CARD */}
         <div className="overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/40 backdrop-blur">
           <div className="relative h-40 bg-gradient-to-br from-emerald-500/25 via-zinc-900 to-zinc-950" />
@@ -151,7 +156,7 @@ export default function Profile() {
             <div className="-mt-12 flex items-end justify-between gap-4">
               <div className="flex items-end gap-4">
                 <img
-                  src={profile.user_photo || "/default-avatar.png"}
+                  src={profile.user_photo}
                   className="h-24 w-24 rounded-full object-cover ring-4 ring-zinc-950 border border-white/10"
                   alt=""
                 />
@@ -173,6 +178,7 @@ export default function Profile() {
             </div>
 
             {profile.bio && <p className="mt-4 text-zinc-200">{profile.bio}</p>}
+            {websiteHref&&<a href={websiteHref} target="_blank" className="cursor-pointer text-red-400">{websiteHref}</a>}
           </div>
         </div>
 

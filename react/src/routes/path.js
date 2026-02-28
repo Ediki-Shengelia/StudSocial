@@ -4,6 +4,7 @@ export const path = {
   dashboard: "/dashboard",
   show: "/posts/show/:id",
   like: "/posts/show/:id",
-  profile:"/profile/:id",
-  EditProfile:"/profile/edit"
+  profile: "/profile/:id",
+  EditProfile: "/profile/edit",
+  restoreuser: "/restore_password",
 };

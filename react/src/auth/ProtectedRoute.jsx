@@ -5,7 +5,9 @@ import { path } from "../routes/path";
 import { PacmanLoader } from "react-spinners";
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
-  if (loading) return <PacmanLoader />;
+  if (loading) return <div className="flex justify-center items-center h-screen bg-black">
+    <PacmanLoader color="red"/>;
+  </div>
   if (!user) return <Navigate to={path.login} replace />;
   return children;
 };

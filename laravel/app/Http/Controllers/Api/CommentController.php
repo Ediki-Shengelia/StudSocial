@@ -25,13 +25,14 @@ class CommentController extends Controller
         }
         return new CommentResource($comment->load('user'));
     }
-    public function destroy(Post $post, $commentId)
-    {
-        $comment = $post->comments()->findOrFail($commentId);
-        $this->authorize('delete', $comment);
-        $comment->delete();
-        return response()->json([
-            'message' => "Comment deleted"
-        ]);
-    }
+    //! This logic we don't have yet
+    // public function destroy(Post $post, $commentId)
+    // {
+    //     $comment = $post->comments()->findOrFail($commentId);
+    //     $this->authorize('delete', $comment);
+    //     $comment->delete();
+    //     return response()->json([
+    //         'message' => "Comment deleted"
+    //     ]);
+    // }
 }

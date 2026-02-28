@@ -19,7 +19,7 @@ const Dashboard = () => {
 
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-  const [updatingId, setUpdatingId] = useState(null);
+  // const [updatingId, setUpdatingId] = useState(null);
 
   async function HandleCreate(payload) {
     setErr("");
@@ -37,17 +37,17 @@ const Dashboard = () => {
     }
   }
 
-  async function HandleUpdate(id, payload) {
-    setErr("");
-    setUpdatingId(id);
-    try {
-      await updatePost(id, payload);
-    } catch (error) {
-      setErr(error?.response?.data?.message || "update failed");
-    } finally {
-      setUpdatingId(null);
-    }
-  }
+  // async function HandleUpdate(id, payload) {
+  //   setErr("");
+  //   setUpdatingId(id);
+  //   try {
+  //     await updatePost(id, payload);
+  //   } catch (error) {
+  //     setErr(error?.response?.data?.message || "update failed");
+  //   } finally {
+  //     setUpdatingId(null);
+  //   }
+  // }
 
   async function handleDelete(id) {
     setErr("");
@@ -146,12 +146,12 @@ const Dashboard = () => {
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-2 sm:p-3 shadow-lg shadow-black/30">
             <PostList
-  posts={posts}
-  onDelete={handleDelete}
-  onLike={toggleLike}   // ✅ toggleLike(post)
-  onAddComment={addComment}
-  deletingId={deletingId}
-/>
+              posts={posts}
+              onDelete={handleDelete}
+              onLike={toggleLike} // ✅ toggleLike(post)
+              onAddComment={addComment}
+              deletingId={deletingId}
+            />
           </div>
         </section>
       </main>

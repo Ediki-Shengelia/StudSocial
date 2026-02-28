@@ -35,7 +35,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json([
                 'message' => 'Login failed'
-            ],401);
+            ], 401);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -51,8 +51,8 @@ class AuthController extends Controller
             'message' => 'Logged Out successfully'
         ]);
     }
-   public function user(Request $request)
-{
-    return $request->user();
-}
+    public function user(Request $request)
+    {
+        return $request->user();
+    }
 }

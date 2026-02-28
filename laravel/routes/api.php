@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile/me', [ProfileController::class, 'me']);
     Route::post('/profile/me', [ProfileController::class, 'update']); // use POST for file upload
     Route::get('/users/{user}', [ProfileController::class, 'show']);
-
     Route::get('/users/{user}/posts', [ProfileController::class, 'posts']);
 });
+Route::post('/restore/user', [ProfileController::class, 'restoreUser']);
+Route::get('/check-email', [ProfileController::class, 'checkEmail']);
