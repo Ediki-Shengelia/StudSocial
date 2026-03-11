@@ -12,7 +12,7 @@ const Font = () => {
   const options = [
     { label: 'Normal', value: '100%' },   // 16px
     { label: 'Large', value: '125%' },    // 20px
-    { label: 'Huge', value: '157%' },   
+    { label: 'Huge', value: '150%' },   
   
   ];
 
