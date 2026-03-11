@@ -4,9 +4,18 @@ import { api } from "../lib/api";
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);     // ✅ start as null
+  const [user, setUser] = useState(null); // ✅ start as null
   const [loading, setLoading] = useState(true); // ✅ app starts "checking"
+  // !!Load saved font from localStorage or default to 'text-base'
+  const [fontSize, setFontSize] = useState(
+    localStorage.getItem("user-font-size") || "text-base",
+  );
 
+  // Save to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("user-font-size", fontSize);
+  }, [fontSize]);
+  // !!
   useEffect(() => {
     let cancelled = false;
 
@@ -77,7 +86,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ user, loading,fontSize, setFontSize, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

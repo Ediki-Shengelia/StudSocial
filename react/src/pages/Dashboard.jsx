@@ -1,13 +1,17 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import { AuthContext } from "../auth/AuthContext";
 import PostForm from "../posts/PostForm";
 import PostList from "../posts/PostList";
 import { usePost } from "../posts/usePost";
 import NotificationsMenu from "./NotificationsMenu";
-import Chat from "./Chat"; // Ensure this matches your file path
+import Chat from "./Chat";
 
 const Dashboard = () => {
-  const { logout, user } = useContext(AuthContext); // Assuming user is in context
+  // We no longer need to pull 'fontSize' to use as a class here
+  const { logout, user } = useContext(AuthContext); 
+  const navigate = useNavigate();
+
   const {
     createPost,
     deletePost,
@@ -47,8 +51,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-emerald-500/30">
-      {/* Top bar */}
+    /* REMOVED: ${fontSize} from the className. 
+       The root font-size change handles this globally. */
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-emerald-500/30 transition-all duration-300">
+      
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
@@ -62,7 +68,16 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate('/')} // Point to your font selection route
+              className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-emerald-500/20 hover:text-emerald-400 transition"
+              title="Change Font Size"
+            >
+              <span className="font-serif font-bold">A</span>
+            </button>
+
             <NotificationsMenu />
+            
             <button
               onClick={logout}
               className="cursor-pointer rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
@@ -73,67 +88,42 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* Content */}
       <main className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[360px_1fr]">
-        {/* Left column (Sidebar) */}
         <aside className="space-y-4">
-          
-          {/* Create a post box */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/30">
             <h2 className="text-base font-semibold text-emerald-400">Create a post</h2>
-            <p className="mt-1 text-sm text-zinc-400">Share something with your feed.</p>
             <div className="mt-4">
               <PostForm onCreate={HandleCreate} creating={creating} />
             </div>
-            {creating && <p className="mt-3 text-xs text-emerald-300 animate-pulse">Creating…</p>}
           </div>
 
-          {/* Error Alert */}
           {err && (
             <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-              <div className="font-semibold">Something went wrong</div>
+              <div className="font-semibold">Error</div>
               <div className="mt-1 opacity-90">{err}</div>
             </div>
           )}
 
-          {/* LIVE CHAT INTEGRATION */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/30">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold flex items-center gap-2">
-                Live Chat 
-                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              </h2>
-              <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Reverb Active</span>
-            </div>
+            <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
+              Live Chat 
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            </h2>
             <div className="rounded-xl overflow-hidden border border-white/5 bg-black/20">
               <Chat />
             </div>
           </div>
-
-          {/* Tips box */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-300">
-            <div className="font-semibold text-emerald-400/80">Tips</div>
-            <ul className="mt-2 list-disc pl-5 text-zinc-400 space-y-1">
-              <li>Click a post to open it.</li>
-              <li>Use ❤️ to like, 💬 to comment.</li>
-              <li>Messages in chat are real-time.</li>
-            </ul>
-          </div>
         </aside>
 
-        {/* Right column (Feed) */}
         <section className="space-y-4">
           <div className="flex items-end justify-between">
             <div>
               <h2 className="text-xl font-semibold">Posts</h2>
-              <p className="text-sm text-zinc-400">Latest updates from the community</p>
+              <p className="text-sm text-zinc-400">Latest updates</p>
             </div>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-zinc-300">
-              {posts?.length ?? 0} posts
-            </span>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-2 sm:p-3 shadow-lg shadow-black/30">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-3 shadow-lg shadow-black/30">
             <PostList
               posts={posts}
               onDelete={handleDelete}

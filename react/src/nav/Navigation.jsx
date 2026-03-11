@@ -22,6 +22,17 @@ const Navigation = () => {
 
           {/* Links */}
           <div className="flex items-center gap-3">
+             <Link
+              to={path.home}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition
+                ${
+                  location.pathname === path.home
+                    ? "bg-emerald-600 text-white"
+                    : "text-zinc-300 hover:bg-white/10"
+                }`}
+            >
+              home
+            </Link>
             <Link
               to={path.login}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition

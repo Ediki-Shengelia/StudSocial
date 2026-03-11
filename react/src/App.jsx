@@ -10,12 +10,14 @@ import GuestRoute from "./routes/GuestRoute";
 import { path } from "./routes/path";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
-import RestoreUser from './pages/RestoreUser'
+import RestoreUser from "./pages/RestoreUser";
+import Font from "./pages/Font";
 function App() {
   return (
     <Routes>
       {/* Guest pages */}
       <Route element={<Navigation />}>
+        <Route path={path.home} element={<Font />} />
         <Route
           path={path.login}
           element={
@@ -33,7 +35,7 @@ function App() {
           }
         />
       </Route>
-
+      <Route path={path.home} element={<Font />} />
       {/* Protected pages */}
       <Route
         path={path.dashboard}
@@ -68,11 +70,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path={path.restoreuser} element={
-        <GuestRoute>
-         <RestoreUser/>
-        </GuestRoute>
-      }/>
+      <Route
+        path={path.restoreuser}
+        element={
+          <GuestRoute>
+            <RestoreUser />
+          </GuestRoute>
+        }
+      />
     </Routes>
   );
 }
