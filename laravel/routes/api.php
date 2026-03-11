@@ -6,8 +6,10 @@ use App\Http\Controllers\Api\LikeController as ApiLikeController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -30,6 +32,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/me', [ProfileController::class, 'update']); // use POST for file upload
     Route::get('/users/{user}', [ProfileController::class, 'show']);
     Route::get('/users/{user}/posts', [ProfileController::class, 'posts']);
+    // Fetch all messages for the history
+    Route::get('/messages', [MessageController::class, 'index']);
+
+    // Send a new message
+    Route::post('/messages', [MessageController::class, 'store']);
 });
 Route::post('/restore/user', [ProfileController::class, 'restoreUser']);
 Route::get('/check-email', [ProfileController::class, 'checkEmail']);

@@ -4,8 +4,10 @@ import PostForm from "../posts/PostForm";
 import PostList from "../posts/PostList";
 import { usePost } from "../posts/usePost";
 import NotificationsMenu from "./NotificationsMenu";
+import Chat from "./Chat"; // Ensure this matches your file path
+
 const Dashboard = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext); // Assuming user is in context
   const {
     createPost,
     deletePost,
@@ -19,7 +21,6 @@ const Dashboard = () => {
 
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-  // const [updatingId, setUpdatingId] = useState(null);
 
   async function HandleCreate(payload) {
     setErr("");
@@ -27,27 +28,11 @@ const Dashboard = () => {
     try {
       await createPost(payload);
     } catch (error) {
-      setErr(
-        error?.response?.data?.message ||
-          error?.message ||
-          "failed to create posts",
-      );
+      setErr(error?.response?.data?.message || error?.message || "failed to create posts");
     } finally {
       setCreating(false);
     }
   }
-
-  // async function HandleUpdate(id, payload) {
-  //   setErr("");
-  //   setUpdatingId(id);
-  //   try {
-  //     await updatePost(id, payload);
-  //   } catch (error) {
-  //     setErr(error?.response?.data?.message || "update failed");
-  //   } finally {
-  //     setUpdatingId(null);
-  //   }
-  // }
 
   async function handleDelete(id) {
     setErr("");
@@ -55,18 +40,14 @@ const Dashboard = () => {
     try {
       await deletePost(id);
     } catch (error) {
-      setErr(
-        error?.response?.data?.message ||
-          error?.message ||
-          "failed to delete posts",
-      );
+      setErr(error?.response?.data?.message || error?.message || "failed to delete posts");
     } finally {
       setDeletingId(null);
     }
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-emerald-500/30">
       {/* Top bar */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -82,7 +63,6 @@ const Dashboard = () => {
 
           <div className="flex items-center gap-3">
             <NotificationsMenu />
-
             <button
               onClick={logout}
               className="cursor-pointer rounded-xl bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/15 active:scale-[0.99] transition"
@@ -95,50 +75,59 @@ const Dashboard = () => {
 
       {/* Content */}
       <main className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[360px_1fr]">
-        {/* Left column */}
+        {/* Left column (Sidebar) */}
         <aside className="space-y-4">
+          
+          {/* Create a post box */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/30">
-            <h2 className="text-base font-semibold">Create a post</h2>
-            <p className="mt-1 text-sm text-zinc-400">
-              Share something with your feed.
-            </p>
-
+            <h2 className="text-base font-semibold text-emerald-400">Create a post</h2>
+            <p className="mt-1 text-sm text-zinc-400">Share something with your feed.</p>
             <div className="mt-4">
               <PostForm onCreate={HandleCreate} creating={creating} />
             </div>
-
-            {creating ? (
-              <p className="mt-3 text-xs text-emerald-300">Creating…</p>
-            ) : null}
+            {creating && <p className="mt-3 text-xs text-emerald-300 animate-pulse">Creating…</p>}
           </div>
 
-          {err ? (
+          {/* Error Alert */}
+          {err && (
             <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
               <div className="font-semibold">Something went wrong</div>
               <div className="mt-1 opacity-90">{err}</div>
             </div>
-          ) : null}
+          )}
 
+          {/* LIVE CHAT INTEGRATION */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/30">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold flex items-center gap-2">
+                Live Chat 
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              </h2>
+              <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Reverb Active</span>
+            </div>
+            <div className="rounded-xl overflow-hidden border border-white/5 bg-black/20">
+              <Chat />
+            </div>
+          </div>
+
+          {/* Tips box */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-300">
-            <div className="font-semibold">Tips</div>
+            <div className="font-semibold text-emerald-400/80">Tips</div>
             <ul className="mt-2 list-disc pl-5 text-zinc-400 space-y-1">
               <li>Click a post to open it.</li>
               <li>Use ❤️ to like, 💬 to comment.</li>
-              <li>Only your posts show the delete button.</li>
+              <li>Messages in chat are real-time.</li>
             </ul>
           </div>
         </aside>
 
-        {/* Feed */}
+        {/* Right column (Feed) */}
         <section className="space-y-4">
           <div className="flex items-end justify-between">
             <div>
               <h2 className="text-xl font-semibold">Posts</h2>
-              <p className="text-sm text-zinc-400">
-                Latest updates from the community
-              </p>
+              <p className="text-sm text-zinc-400">Latest updates from the community</p>
             </div>
-
             <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-zinc-300">
               {posts?.length ?? 0} posts
             </span>
@@ -148,7 +137,7 @@ const Dashboard = () => {
             <PostList
               posts={posts}
               onDelete={handleDelete}
-              onLike={toggleLike} // ✅ toggleLike(post)
+              onLike={toggleLike}
               onAddComment={addComment}
               deletingId={deletingId}
             />
