@@ -34,17 +34,17 @@ class MessageSent implements ShouldBroadcast
     }
 
     // ADD THIS: This ensures the structure is { "message": { "body": "...", "user": "..." } }
-// MessageSent.php
-public function broadcastWith(): array
-{
-    return [
-        'message' => [
-            'id'   => $this->message->id,
-            'body' => $this->message->body,
-            'user' => [
-                'name' => $this->message->user->name ?? 'User'
-            ], 
-        ],
-    ];
-}
+    // MessageSent.php
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => [
+                'id'   => $this->message->id,
+                'body' => $this->message->body,
+                'user' => [
+                    'name' => $this->message->user->name ?? 'User'
+                ],
+            ],
+        ];
+    }
 }

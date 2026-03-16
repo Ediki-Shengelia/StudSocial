@@ -45,26 +45,40 @@ export default function Chat() {
   }, []);
 
   const send = async (e) => {
-    e.preventDefault();
-    const messageContent = input.trim();
-    if (!messageContent) return;
+  e.preventDefault();
+  const messageContent = input.trim();
+  if (!messageContent) return;
 
-    setInput(""); // Clear input immediately
-
-    try {
-      const { data } = await api.post("/api/messages", {
-        body: messageContent,
-      });
-
-      // Update state locally so the sender sees it instantly
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === data.id)) return prev;
-        return [...prev, data];
-      });
-    } catch (error) {
-      console.error("Chat error:", error);
-    }
+  // 1. Create a "Fake" message for the UI
+  const tempId = Date.now();
+  const optimisticMessage = {
+    id: tempId,
+    body: messageContent,
+    user: { name: "You" }, // Or your actual user object
+    isSending: true,       // Useful if you want to show a '...' icon
   };
+
+  // 2. Clear input and update UI IMMEDIATELY
+  setInput("");
+  setMessages((prev) => [...prev, optimisticMessage]);
+
+  try {
+    // 3. Send to server in the background
+    const { data } = await api.post("/api/messages", {
+      body: messageContent,
+    });
+
+    // 4. Replace the fake message with the real one from the server
+    setMessages((prev) => 
+      prev.map((m) => (m.id === tempId ? data : m))
+    );
+  } catch (error) {
+    console.error("Chat error:", error);
+    // 5. If it fails, remove the fake message
+    setMessages((prev) => prev.filter((m) => m.id !== tempId));
+    alert("Message failed to send.");
+  }
+};
 
   return (
     <div className="flex flex-col h-[400px] bg-zinc-950 rounded-2xl border border-white/10 overflow-hidden">

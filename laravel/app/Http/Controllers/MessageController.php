@@ -15,23 +15,20 @@ class MessageController extends Controller
         return Message::with('user')->latest()->take(50)->get()->reverse()->values();
     }
 
-    // Fixes the 500 error
-    public function store(Request $request)
-    {
-        try {
-            $message = Message::create([
-                'user_id' => auth()->id() ?? 1,
-                'body' => $request->body,
-            ]);
+   public function store(Request $request)
+{
+    $user = auth()->user();
 
-            $message->load('user');
+    $message = $user->messages()->create([
+        'body' => $request->body,
+    ]);
 
-            broadcast(new MessageSent($message))->toOthers();
+    // Manually attach the user object without a new DB query
+    $message->setRelation('user', $user);
 
-            return $message;
-        } catch (\Exception $e) {
-            Log::error("Chat Store Failed: " . $e->getMessage());
-            return response()->json(['error' => 'Server Error'], 500);
-        }
-    }
+    // Broadcast instantly
+    broadcast(new MessageSent($message))->toOthers();
+
+    return $message;
+}
 }
